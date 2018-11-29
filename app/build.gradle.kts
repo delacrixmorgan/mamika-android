@@ -11,14 +11,13 @@ plugins {
 
 android {
     compileSdkVersion(28)
-    buildToolsVersion = "28.0.3"
 
     defaultConfig {
         applicationId = "com.delacrixmorgan.mamika"
         minSdkVersion(21)
         targetSdkVersion(28)
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,15 +27,13 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
-
-    packagingOptions.exclude("META-INF/main.kotlin_module")
 }
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(kotlin("stdlib-jdk7", KotlinCompilerVersion.VERSION))
-    implementation("com.android.support:appcompat-v7:28.0.0")
-    implementation("com.android.support.constraint:constraint-layout:1.1.3")
+    implementation("androidx.appcompat:appcompat:1.0.2")
+    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
 
     testImplementation("junit:junit:4.12")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
