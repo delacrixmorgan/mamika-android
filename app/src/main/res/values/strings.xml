@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Mamika</string>
+
+    <string name="message_record_capture_permission_required">Permission Required</string>
+    <string name="message_record_capture_session_exception_error">Unable to configure capture session</string>
+    <string name="message_record_capture_interrupted_exception_error">Interrupted while trying to lock camera closing</string>
+    <string name="message_record_capture_unable_access_camera_exception_error">Unable to access to the camera</string>
+    <string name="message_record_capture_camera_api_not_supported_exception_error">Camera2API is not supported by this device</string>
+    <string name="message_record_capture_preview_sizes_exception_error">Cannot get available video preview sizes</string>
+    <string name="message_record_capture_timeout_exception_error">Time out waiting to lock camera opening</string>
+    <string name="message_record_capture_camera_access_exception_error">Camera Access Exception</string>
+    <string name="message_record_capture_runtime_exception_error">Runtime Exception Error</string>
+
+    <string name="record_capture_message_trim_fail">FFMPEG Trim Failed</string>
+    <string name="record_capture_message_not_supported">FFMPEG Not Supported</string>
+    <string name="record_capture_title_gallery_select">Select Video</string>
 </resources>

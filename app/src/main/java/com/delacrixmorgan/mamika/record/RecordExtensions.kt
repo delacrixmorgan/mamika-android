@@ -1,14 +1,24 @@
 package com.delacrixmorgan.mamika.record
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Matrix
+import android.graphics.Rect
 import android.graphics.RectF
+import android.hardware.camera2.CameraCaptureSession
+import android.hardware.camera2.CameraDevice
+import android.hardware.camera2.CameraManager
+import android.hardware.camera2.CaptureRequest
+import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Handler
+import android.os.HandlerThread
 import android.provider.MediaStore
 import android.util.Size
 import android.util.SparseIntArray
+import android.view.GestureDetector
 import android.view.Surface
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -16,6 +26,7 @@ import com.delacrixmorgan.mamika.R
 import kotlinx.android.synthetic.main.fragment_record_capture.*
 import java.io.File
 import java.util.*
+import java.util.concurrent.Semaphore
 
 /**
  * RecordExtensions
@@ -46,6 +57,40 @@ val INVERSE_ORIENTATIONS = SparseIntArray().apply {
     append(Surface.ROTATION_270, 0)
 }
 //endreigon
+
+//region Variables
+val cameraOpenCloseLock = Semaphore(1)
+val VIDEO_PERMISSIONS = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+var zoomLevel = 1F
+var maximumRawY = 0F
+var fingerSpacing = 0F
+var anchorPosition = 0F
+var maximumZoomLevel = 0F
+var zoomRect: Rect? = null
+
+var mamikaCameraDevice: CameraDevice? = null
+var captureSession: CameraCaptureSession? = null
+
+var isFlashOn = false
+var isRecordingVideo = false
+
+var videoAbsolutePath: String? = null
+var backgroundHandler: Handler? = null
+var mediaRecorder: MediaRecorder? = null
+var backgroundThread: HandlerThread? = null
+
+var sensorOrientation = 0
+var cameraDirection = CAMERA_BACK
+
+lateinit var videoSize: Size
+lateinit var cameraManager: CameraManager
+lateinit var gestureDetector: GestureDetector
+lateinit var previewRequestBuilder: CaptureRequest.Builder
+//endregion
 
 //region Activity Extension
 fun Activity.hasPermissionsGranted(permissions: Array<String>) =
