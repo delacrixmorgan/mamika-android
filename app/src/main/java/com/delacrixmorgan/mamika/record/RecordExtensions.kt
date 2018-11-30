@@ -60,10 +60,6 @@ val INVERSE_ORIENTATIONS = SparseIntArray().apply {
 
 //region Variables
 val cameraOpenCloseLock = Semaphore(1)
-val VIDEO_PERMISSIONS = arrayOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
 var zoomLevel = 1F
 var maximumRawY = 0F

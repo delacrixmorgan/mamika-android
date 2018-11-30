@@ -18,9 +18,7 @@ import kotlinx.android.synthetic.main.fragment_base_routing.*
 
 class RecordRoutingFragment : Fragment() {
     companion object {
-        fun newInstance(): RecordRoutingFragment {
-            return RecordRoutingFragment()
-        }
+        fun newInstance() = RecordRoutingFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,8 +32,8 @@ class RecordRoutingFragment : Fragment() {
         if (savedInstanceState == null) {
             this.activity?.apply {
                 supportFragmentManager.beginTransaction()
-                    .replace(this.routingContainer.id, fragment, fragment.javaClass.simpleName)
-                    .commit()
+                        .replace(this.routingContainer.id, fragment, fragment.javaClass.simpleName)
+                        .commit()
             }
         }
     }

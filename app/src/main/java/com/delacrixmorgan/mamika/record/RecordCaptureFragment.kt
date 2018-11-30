@@ -18,6 +18,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.view.*
 import androidx.fragment.app.Fragment
+import com.delacrixmorgan.mamika.MainActivity.Companion.VIDEO_PERMISSIONS
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.calculateFingerSpacing
 import com.delacrixmorgan.mamika.common.PermissionsUtils

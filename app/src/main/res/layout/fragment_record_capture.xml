@@ -15,10 +15,10 @@
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
         android:indeterminate="false"
         android:max="30"
+        app:layout_constraintTop_toTopOf="parent"
         tools:progress="24" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
