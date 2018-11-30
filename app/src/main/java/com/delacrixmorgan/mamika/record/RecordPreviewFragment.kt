@@ -19,7 +19,11 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.TransferListener
 import com.google.android.exoplayer2.util.Util
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_record_preview.*
+import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler
+import nl.bravobit.ffmpeg.FFmpeg
+import java.io.File
 
 /**
  * RecordPreviewFragment
@@ -70,6 +74,15 @@ class RecordPreviewFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_record_preview, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        generatePalette()
+
+        this.generateButton.setOnClickListener {
+            generatePalette()
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         initialiseVideoPlayer(this.videoUrl)
@@ -111,5 +124,92 @@ class RecordPreviewFragment : Fragment() {
 
         this.simpleExoPlayer = null
         this.trackSelector = null
+    }
+
+    private fun generatePalette() {
+        val context = this.context ?: return
+        val ffmpeg = FFmpeg.getInstance(context)
+
+        val palette = "palette.png"
+        val filters = "fps=15,scale=300:-1:flags=lanczos,palettegen"
+
+        val dir = this.context!!.filesDir
+        val file = File("$dir/$palette")
+
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+
+        val command = arrayOf("-y", "-v", "warning", "-i", this.videoUrl, "-vf", filters, "$dir/$palette")
+
+
+//        val command = arrayOf("-y", "-i", this.videoUrl, "-vf", filters, palette)
+//        val command = arrayOf("-i", this.videoUrl, "-vf", "palettegen=max_colors=24", palette)
+        //ffmpeg -y -ss 30 -t 3 -i input.flv \
+        //-vf fps=10,scale=320:-1:flags=lanczos,palettegen palette.png
+
+        if (ffmpeg.isSupported) {
+            ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
+                override fun onStart() {
+                    this@RecordPreviewFragment.loadingViewGroup.visibility = View.VISIBLE
+                }
+
+                override fun onSuccess(message: String?) {
+                    generateGif()
+                }
+
+                override fun onFailure(message: String?) {
+                    this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                    Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
+                }
+
+                override fun onFinish() {
+                }
+            })
+        } else {
+            Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_not_supported), Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun generateGif() {
+        val context = this.context ?: return
+        var isConversionSuccessful = false
+        val ffmpeg = FFmpeg.getInstance(context)
+        val outputFile = context.getVideoFilePath()
+
+        val palette = "${this.context!!.filesDir}/palette.png"
+        val filters = "fps=15,scale=320:-1:flags=lanczos"
+        val command = arrayOf("-v", "warning", "-i", this.videoUrl, "-i", palette, "-lavfi", "$filters [x]; [x][1:v] paletteuse", "-y", outputFile)
+
+        if (ffmpeg.isSupported) {
+            ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
+                override fun onStart() {
+                    this@RecordPreviewFragment.loadingViewGroup.visibility = View.VISIBLE
+                }
+
+                override fun onSuccess(message: String?) {
+                    isConversionSuccessful = true
+                }
+
+                override fun onFailure(message: String?) {
+                    isConversionSuccessful = false
+                    this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                    Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
+                }
+
+                override fun onFinish() {
+                    if (isConversionSuccessful) {
+                        this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                        launchPreviewFragment(outputFile)
+                    }
+                }
+            })
+        } else {
+            Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_not_supported), Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun launchPreviewFragment(outputFile: String) {
+
     }
 }

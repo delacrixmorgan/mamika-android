@@ -42,8 +42,8 @@ import java.util.concurrent.TimeUnit
 class RecordCaptureFragment : Fragment(), SwipeGesture {
     companion object {
         private const val REQUEST_GALLERY_PICK = 1
-        private const val MAX_DURATION_IN_MILLISECONDS: Long = 30 * 1000
-
+        
+        const val MAX_DURATION_IN_MILLISECONDS: Long = 30 * 1000
         const val EXTRA_PERMISSION_MISSING = "permissionMissing"
 
         fun newInstance(): RecordCaptureFragment = RecordCaptureFragment()
@@ -118,10 +118,6 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
         this.galleryButton.setOnClickListener {
             launchGalleryVideoPickerIntent()
         }
-
-//        this.closeButton.setOnClickListener {
-//            activity.finish()
-//        }
 
         this.recordButton.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
@@ -228,7 +224,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
         if (ffmpeg.isSupported) {
             ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
                 override fun onStart() {
-//                    this@RecordCaptureFragment.loadingLayout.visibility = View.VISIBLE
+                    this@RecordCaptureFragment.loadingViewGroup.visibility = View.VISIBLE
                 }
 
                 override fun onSuccess(message: String?) {
@@ -237,7 +233,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
 
                 override fun onFailure(message: String?) {
                     isTrimSuccessful = false
-//                    this@RecordCaptureFragment.loadingLayout.visibility = View.GONE
+                    this@RecordCaptureFragment.loadingViewGroup.visibility = View.GONE
                     Snackbar.make(
                             this@RecordCaptureFragment.parentViewGroup,
                             getString(R.string.record_capture_message_trim_fail),
@@ -247,7 +243,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
 
                 override fun onFinish() {
                     if (isTrimSuccessful) {
-//                        this@RecordCaptureFragment.loadingLayout.visibility = View.GONE
+                        this@RecordCaptureFragment.loadingViewGroup.visibility = View.GONE
                         launchPreviewFragment(outputFile, true)
                     }
                 }
