@@ -18,8 +18,10 @@
         android:layout_height="wrap_content"
         android:indeterminate="false"
         android:max="30"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        tools:progress="24" />
+        tools:progress="24"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,8 +33,8 @@
             android:id="@+id/galleryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
+            android:padding="8dp"
             android:src="@drawable/ic_gallery"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +57,8 @@
             android:id="@+id/flashButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
+            android:padding="8dp"
             android:src="@drawable/ic_flash_off"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/switchButton"
@@ -66,8 +68,8 @@
             android:id="@+id/switchButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
+            android:padding="8dp"
             android:src="@drawable/ic_switch_camera"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

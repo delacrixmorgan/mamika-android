@@ -510,8 +510,10 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
     private fun toggleCameraFlash() {
         if (cameraDirection == CAMERA_BACK) {
             if (isFlashOn) {
+                this.flashButton.setBackgroundResource(R.drawable.ic_flash_on)
                 previewRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF)
             } else {
+                this.flashButton.setBackgroundResource(R.drawable.ic_flash_off)
                 previewRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH)
             }
 
@@ -554,7 +556,9 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
 
         if (isRecordingVideo) {
             stopRecordingVideo()
+            this.progressBar.visibility = View.GONE
         } else {
+            this.progressBar.visibility = View.VISIBLE
             this.recordButton.isEnabled = false
             startRecordingVideo()
         }
@@ -628,7 +632,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
 
                             isRecordingVideo = true
                             recordButton.isEnabled = true
-//                            recordButton.setBackgroundResource(R.drawable.ic_camera_button_stop)
+                            recordButton.setImageResource(R.drawable.ic_camera_stop)
                         }
                     }
                 }
@@ -645,7 +649,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
 
     private fun stopRecordingVideo() {
         if (this.progressBar.progress > 1) {
-//            this.recordButton.setBackgroundResource(R.drawable.ic_camera_button_record)
+            this.recordButton.setImageResource(R.drawable.ic_camera_record)
             this.progressBar.progress = 0
 
             try {
