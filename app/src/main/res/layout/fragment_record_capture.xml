@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:padding="8dp"
-            android:src="@drawable/ic_flash_off"
+            android:src="@drawable/ic_flash_on"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/switchButton"
             app:layout_constraintTop_toTopOf="parent" />

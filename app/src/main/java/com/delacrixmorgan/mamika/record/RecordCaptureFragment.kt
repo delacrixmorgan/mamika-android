@@ -510,10 +510,10 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
     private fun toggleCameraFlash() {
         if (cameraDirection == CAMERA_BACK) {
             if (isFlashOn) {
-                this.flashButton.setBackgroundResource(R.drawable.ic_flash_on)
+                this.flashButton.setImageResource(R.drawable.ic_flash_on)
                 previewRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF)
             } else {
-                this.flashButton.setBackgroundResource(R.drawable.ic_flash_off)
+                this.flashButton.setImageResource(R.drawable.ic_flash_off)
                 previewRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH)
             }
 
@@ -650,6 +650,8 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
     private fun stopRecordingVideo() {
         if (this.progressBar.progress > 1) {
             this.recordButton.setImageResource(R.drawable.ic_camera_record)
+            this.flashButton.setImageResource(R.drawable.ic_flash_on)
+
             this.progressBar.progress = 0
 
             try {
