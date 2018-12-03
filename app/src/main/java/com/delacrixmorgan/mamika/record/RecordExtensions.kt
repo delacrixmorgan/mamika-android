@@ -1,6 +1,5 @@
 package com.delacrixmorgan.mamika.record
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -23,6 +22,7 @@ import android.view.Surface
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.delacrixmorgan.mamika.R
+import com.delacrixmorgan.mamika.common.FileType
 import kotlinx.android.synthetic.main.fragment_record_capture.*
 import java.io.File
 import java.util.*
@@ -90,9 +90,9 @@ lateinit var previewRequestBuilder: CaptureRequest.Builder
 
 //region Activity Extension
 fun Activity.hasPermissionsGranted(permissions: Array<String>) =
-        permissions.none {
-            ContextCompat.checkSelfPermission((this as FragmentActivity), it) != PackageManager.PERMISSION_GRANTED
-        }
+    permissions.none {
+        ContextCompat.checkSelfPermission((this as FragmentActivity), it) != PackageManager.PERMISSION_GRANTED
+    }
 
 /**
  * Configures the necessary [android.graphics.Matrix] transformation to `textureView`.
@@ -117,8 +117,9 @@ fun Activity.configureTransform(previewSize: Size, viewWidth: Int, viewHeight: I
         bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
         matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL)
         val scale = Math.max(
-                viewHeight.toFloat() / previewSize.height,
-                viewWidth.toFloat() / previewSize.width)
+            viewHeight.toFloat() / previewSize.height,
+            viewWidth.toFloat() / previewSize.width
+        )
         with(matrix) {
             postScale(scale, scale, centerX, centerY)
             postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY)
@@ -129,10 +130,10 @@ fun Activity.configureTransform(previewSize: Size, viewWidth: Int, viewHeight: I
 //endregion
 
 //region Context Extension
-fun Context.getVideoFilePath(): String {
+fun Context.getVideoFilePath(fileType: FileType): String {
     val dir = this.filesDir
     val folder = this.getString(R.string.app_name)
-    val filename = "${UUID.randomUUID()}.mp4"
+    val filename = "${UUID.randomUUID()}.${fileType.name.toLowerCase()}"
     val file = File("$dir/$folder")
 
     if (!file.exists()) {

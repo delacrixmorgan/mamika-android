@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.MainActivity.Companion.VIDEO_PERMISSIONS
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.calculateFingerSpacing
+import com.delacrixmorgan.mamika.common.FileType
 import com.delacrixmorgan.mamika.common.PermissionsUtils
 import com.delacrixmorgan.mamika.common.SwipeGesture
 import com.delacrixmorgan.mamika.performHapticContextClick
@@ -216,7 +217,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
         val context = this.context ?: return
         var isTrimSuccessful = false
         val ffmpeg = FFmpeg.getInstance(context)
-        val outputFile = context.getVideoFilePath()
+        val outputFile = context.getVideoFilePath(FileType.MP4)
         val maxDurationInSeconds = MAX_DURATION_IN_MILLISECONDS / 1000
         val command =
                 arrayOf("-i", videoUrl, "-ss", "00:00:00", "-codec", "copy", "-t", "$maxDurationInSeconds", outputFile)
@@ -565,7 +566,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
         val cameraActivity = this.activity ?: return
 
         if (videoAbsolutePath.isNullOrEmpty()) {
-            videoAbsolutePath = this.context?.getVideoFilePath()
+            videoAbsolutePath = this.context?.getVideoFilePath(FileType.MP4)
         }
 
         val rotation = cameraActivity.windowManager.defaultDisplay.rotation
