@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.common.FileType
@@ -142,8 +143,8 @@ class RecordPreviewFragment : Fragment() {
         }
 
         val filters = "fps=15,scale=300:-1:flags=lanczos,palettegen"
-        val file = File(this.paletteFilePath)
-        if (!file.exists()) file.createNewFile()
+        val paletteFile = File(this.paletteFilePath)
+        if (!paletteFile.exists()) paletteFile.createNewFile()
 
         val command = arrayOf("-y", "-v", "warning", "-i", this.videoUrl, "-vf", filters, this.paletteFilePath)
 
@@ -178,10 +179,10 @@ class RecordPreviewFragment : Fragment() {
         val context = this.context ?: return
         var isConversionSuccessful = false
 
-        val outputFile = context.getVideoFilePath(FileType.GIF)
+        val outputFilePath = context.getVideoFilePath(FileType.GIF)
 
         val filters = "fps=15,scale=320:-1:flags=lanczos"
-        val command = arrayOf("-v", "warning", "-stats", "-i", this.videoUrl, "-i", this.paletteFilePath, "-lavfi", "$filters [x]; [x][1:v] paletteuse", "-y", outputFile)
+        val command = arrayOf("-v", "warning", "-stats", "-i", this.videoUrl, "-i", this.paletteFilePath, "-lavfi", "$filters [x]; [x][1:v] paletteuse", "-y", outputFilePath)
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
@@ -207,9 +208,12 @@ class RecordPreviewFragment : Fragment() {
 
             override fun onFinish() {
                 if (isConversionSuccessful) {
-                    this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                    loadingViewGroup.visibility = View.GONE
 
-                    shareFile(File(outputFile))
+                    val outputFile = File(outputFilePath)
+                    if (!outputFile.exists()) outputFile.createNewFile()
+
+                    shareFile(outputFile)
 
                     // TODO - Enable When Editor is Ready
 //                    launchEditorFragment(outputFile)
@@ -218,19 +222,22 @@ class RecordPreviewFragment : Fragment() {
         })
     }
 
-    private fun launchEditorFragment(outputFile: String) {
-
-    }
-
     private fun shareFile(file: File) {
+        val context = this.context ?: return
         val intentShareFile = Intent(Intent.ACTION_SEND)
+        val fileProvider = FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
 
         intentShareFile.type = URLConnection.guessContentTypeFromName(file.name)
-        intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file.absolutePath))
 
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, fileProvider)
         intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Mamika Title")
         intentShareFile.putExtra(Intent.EXTRA_TEXT, "Mamika Body")
+        intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         startActivity(Intent.createChooser(intentShareFile, "Share File"))
+    }
+
+    private fun launchEditorFragment(outputFile: String) {
+
     }
 }
