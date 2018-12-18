@@ -15,9 +15,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelection
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -74,7 +72,11 @@ class RecordPreviewFragment : Fragment() {
         this.paletteFilePath = "${this.context?.filesDir}/$FILENAME_FFMPEG_PALATTE"
 
         this.bandwidthMeter = DefaultBandwidthMeter()
-        this.dataSourceFactory = DefaultDataSourceFactory(this.context, Util.getUserAgent(this.context, this.activity?.packageName), this.bandwidthMeter as TransferListener)
+        this.dataSourceFactory = DefaultDataSourceFactory(
+            this.context,
+            Util.getUserAgent(this.context, this.activity?.packageName),
+            this.bandwidthMeter as TransferListener
+        )
 
         this.arguments?.let {
             this.videoUrl = it.getString(ARG_RECORD_PREVIEW_VIDEO_URL) ?: ""
@@ -111,12 +113,9 @@ class RecordPreviewFragment : Fragment() {
     }
 
     private fun initialiseVideoPlayer(videoUrl: String) {
-        val videoTrackSelectionFactory: TrackSelection.Factory = AdaptiveTrackSelection.Factory(this.bandwidthMeter)
         val mediaSource = ExtractorMediaSource.Factory(this.dataSourceFactory).createMediaSource(Uri.parse(videoUrl))
-
-        this.trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-        this.simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this.context, this.trackSelector)
-
+        
+        this.simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this.context, DefaultTrackSelector())
         this.simpleExoPlayer?.prepare(mediaSource)
         this.simpleExoPlayer?.playWhenReady = true
         this.simpleExoPlayer?.repeatMode = Player.REPEAT_MODE_ALL
