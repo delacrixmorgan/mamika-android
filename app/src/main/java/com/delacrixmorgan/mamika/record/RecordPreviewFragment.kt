@@ -155,11 +155,8 @@ class RecordPreviewFragment : Fragment() {
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.VISIBLE
-            }
-
-            override fun onProgress(message: String?) {
-                super.onProgress(message)
+                loadingViewGroup.visibility = View.VISIBLE
+                generateButton.hide()
             }
 
             override fun onSuccess(message: String?) {
@@ -167,7 +164,9 @@ class RecordPreviewFragment : Fragment() {
             }
 
             override fun onFailure(message: String?) {
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                loadingViewGroup.visibility = View.GONE
+                generateButton.show()
+
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
@@ -186,7 +185,8 @@ class RecordPreviewFragment : Fragment() {
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.VISIBLE
+                loadingViewGroup.visibility = View.VISIBLE
+                generateButton.hide()
 
                 val file = File(this@RecordPreviewFragment.videoUrl)
                 Log.i("RecordPreviewFragment", "totalSpace: ${file.totalSpace}")
@@ -202,13 +202,16 @@ class RecordPreviewFragment : Fragment() {
 
             override fun onFailure(message: String?) {
                 isConversionSuccessful = false
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                loadingViewGroup.visibility = View.GONE
+                generateButton.show()
+
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
             override fun onFinish() {
                 if (isConversionSuccessful) {
                     loadingViewGroup.visibility = View.GONE
+                    generateButton.show()
 
                     val outputFile = File(outputFilePath)
                     if (!outputFile.exists()) outputFile.createNewFile()
