@@ -9,18 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.common.FileType
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelection
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.TransferListener
-import com.google.android.exoplayer2.util.Util
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_record_preview.*
 import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler
@@ -206,13 +194,15 @@ class RecordPreviewFragment : Fragment() {
             override fun onFinish() {
                 if (isConversionSuccessful) {
                     this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
-                    launchPreviewFragment(outputFile)
+
+                    // TODO - Enable When Editor is Ready
+                    launchEditorFragment(outputFile)
                 }
             }
         })
     }
 
-    private fun launchPreviewFragment(outputFile: String) {
+    private fun launchEditorFragment(outputFile: String) {
 
     }
 }
