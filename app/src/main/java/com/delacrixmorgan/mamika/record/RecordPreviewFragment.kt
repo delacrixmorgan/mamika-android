@@ -1,5 +1,6 @@
 package com.delacrixmorgan.mamika.record
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -9,11 +10,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.common.FileType
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelection
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.TransferListener
+import com.google.android.exoplayer2.util.Util
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_record_preview.*
 import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler
 import nl.bravobit.ffmpeg.FFmpeg
 import java.io.File
+import java.net.URLConnection
 
 /**
  * RecordPreviewFragment
@@ -108,7 +122,7 @@ class RecordPreviewFragment : Fragment() {
 
         this.playerView.player = this.simpleExoPlayer
         this.playerView.useController = false
-        this.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        this.playerView.resizeMode = RESIZE_MODE_ZOOM
     }
 
     private fun releasePlayer() {
@@ -195,8 +209,10 @@ class RecordPreviewFragment : Fragment() {
                 if (isConversionSuccessful) {
                     this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
 
+                    shareFile(File(outputFile))
+
                     // TODO - Enable When Editor is Ready
-                    launchEditorFragment(outputFile)
+//                    launchEditorFragment(outputFile)
                 }
             }
         })
@@ -204,5 +220,17 @@ class RecordPreviewFragment : Fragment() {
 
     private fun launchEditorFragment(outputFile: String) {
 
+    }
+
+    private fun shareFile(file: File) {
+        val intentShareFile = Intent(Intent.ACTION_SEND)
+
+        intentShareFile.type = URLConnection.guessContentTypeFromName(file.name)
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file.absolutePath))
+
+        intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Mamika Title")
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Mamika Body")
+
+        startActivity(Intent.createChooser(intentShareFile, "Share File"))
     }
 }
