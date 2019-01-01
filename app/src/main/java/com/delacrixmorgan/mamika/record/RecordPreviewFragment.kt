@@ -90,15 +90,18 @@ class RecordPreviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        generatePalette()
 
-        this.generateButton.setOnClickListener {
-            generatePalette()
-        }
+        generatePalette()
+        setupListeners()
     }
 
     override fun onStart() {
         super.onStart()
+        initialiseVideoPlayer(this.videoUrl)
+    }
+
+    override fun onResume() {
+        super.onResume()
         initialiseVideoPlayer(this.videoUrl)
     }
 
@@ -135,6 +138,20 @@ class RecordPreviewFragment : Fragment() {
         this.trackSelector = null
     }
 
+    private fun setupListeners() {
+        this.backButton.setOnClickListener {
+            this.activity?.supportFragmentManager?.popBackStack()
+        }
+
+        this.generateButton.setOnClickListener {
+            generatePalette()
+        }
+
+        this.settingsButton?.setOnClickListener {
+
+        }
+    }
+
     private fun generatePalette() {
         if (!this.ffmpeg.isSupported) {
             Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_not_supported), Snackbar.LENGTH_SHORT).show()
@@ -155,7 +172,6 @@ class RecordPreviewFragment : Fragment() {
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
                 loadingViewGroup.visibility = View.VISIBLE
-                generateButton.hide()
             }
 
             override fun onSuccess(message: String?) {
@@ -164,8 +180,6 @@ class RecordPreviewFragment : Fragment() {
 
             override fun onFailure(message: String?) {
                 loadingViewGroup.visibility = View.GONE
-                generateButton.show()
-
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
@@ -185,7 +199,6 @@ class RecordPreviewFragment : Fragment() {
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
                 loadingViewGroup.visibility = View.VISIBLE
-                generateButton.hide()
 
                 val file = File(this@RecordPreviewFragment.videoUrl)
                 Log.i("RecordPreviewFragment", "totalSpace: ${file.totalSpace}")
@@ -202,8 +215,6 @@ class RecordPreviewFragment : Fragment() {
             override fun onFailure(message: String?) {
                 isConversionSuccessful = false
                 loadingViewGroup.visibility = View.GONE
-                generateButton.show()
-
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
@@ -232,8 +243,7 @@ class RecordPreviewFragment : Fragment() {
         intentShareFile.type = URLConnection.guessContentTypeFromName(file.name)
 
         intentShareFile.putExtra(Intent.EXTRA_STREAM, fileProvider)
-        intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Mamika Title")
-        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Mamika Body")
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sent from Mamika")
         intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         startActivity(Intent.createChooser(intentShareFile, "Share File"))

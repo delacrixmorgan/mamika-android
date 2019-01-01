@@ -121,10 +121,8 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
         }
 
         this.recordButton.setOnTouchListener { _, event ->
-            if (isFlashOn) {
-                this.flashButton.setImageResource(R.drawable.ic_flash_on)
-                isFlashOn = !isFlashOn
-            }
+            this.flashButton.visibility = View.VISIBLE
+            this.galleryButton.visibility = View.INVISIBLE
 
             gestureDetector.onTouchEvent(event)
             panToZoom(event)
@@ -170,6 +168,8 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
 
         if (this.textureView.isAvailable) {
             openCamera()
+            this.flashButton.visibility = View.INVISIBLE
+            this.galleryButton.visibility = View.VISIBLE
         } else {
             this.textureView.surfaceTextureListener = surfaceTextureListener
             this.textureView.setOnTouchListener { _, event ->
@@ -651,7 +651,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
 
     private fun stopRecordingVideo() {
         if (this.progressBar.progress > 1) {
-            this.recordButton.setImageResource(R.drawable.ic_camera_record)
+            this.recordButton.setImageResource(0)
             this.flashButton.setImageResource(R.drawable.ic_flash_on)
 
             this.progressBar.progress = 0
