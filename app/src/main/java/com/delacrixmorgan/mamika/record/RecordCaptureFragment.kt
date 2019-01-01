@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
 class RecordCaptureFragment : Fragment(), SwipeGesture {
     companion object {
         private const val REQUEST_GALLERY_PICK = 1
-        
+
         const val MAX_DURATION_IN_MILLISECONDS: Long = 30 * 1000
         const val EXTRA_PERMISSION_MISSING = "permissionMissing"
 
@@ -121,6 +121,11 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
         }
 
         this.recordButton.setOnTouchListener { _, event ->
+            if (isFlashOn) {
+                this.flashButton.setImageResource(R.drawable.ic_flash_on)
+                isFlashOn = !isFlashOn
+            }
+
             gestureDetector.onTouchEvent(event)
             panToZoom(event)
             captureSession?.setRepeatingRequest(previewRequestBuilder.build(), null, null)
