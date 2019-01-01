@@ -1,11 +1,13 @@
 package com.delacrixmorgan.mamika.record
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.common.FileType
@@ -13,10 +15,8 @@ import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelection
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.TransferListener
@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_record_preview.*
 import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler
 import nl.bravobit.ffmpeg.FFmpeg
 import java.io.File
+import java.net.URLConnection
 
 /**
  * RecordPreviewFragment
@@ -71,7 +72,11 @@ class RecordPreviewFragment : Fragment() {
         this.paletteFilePath = "${this.context?.filesDir}/$FILENAME_FFMPEG_PALATTE"
 
         this.bandwidthMeter = DefaultBandwidthMeter()
-        this.dataSourceFactory = DefaultDataSourceFactory(this.context, Util.getUserAgent(this.context, this.activity?.packageName), this.bandwidthMeter as TransferListener)
+        this.dataSourceFactory = DefaultDataSourceFactory(
+            this.context,
+            Util.getUserAgent(this.context, this.activity?.packageName),
+            this.bandwidthMeter as TransferListener
+        )
 
         this.arguments?.let {
             this.videoUrl = it.getString(ARG_RECORD_PREVIEW_VIDEO_URL) ?: ""
@@ -108,19 +113,16 @@ class RecordPreviewFragment : Fragment() {
     }
 
     private fun initialiseVideoPlayer(videoUrl: String) {
-        val videoTrackSelectionFactory: TrackSelection.Factory = AdaptiveTrackSelection.Factory(this.bandwidthMeter)
         val mediaSource = ExtractorMediaSource.Factory(this.dataSourceFactory).createMediaSource(Uri.parse(videoUrl))
-
-        this.trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-        this.simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this.context, this.trackSelector)
-
+        
+        this.simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this.context, DefaultTrackSelector())
         this.simpleExoPlayer?.prepare(mediaSource)
         this.simpleExoPlayer?.playWhenReady = true
         this.simpleExoPlayer?.repeatMode = Player.REPEAT_MODE_ALL
 
         this.playerView.player = this.simpleExoPlayer
         this.playerView.useController = false
-        this.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        this.playerView.resizeMode = RESIZE_MODE_ZOOM
     }
 
     private fun releasePlayer() {
@@ -140,8 +142,8 @@ class RecordPreviewFragment : Fragment() {
         }
 
         val filters = "fps=15,scale=300:-1:flags=lanczos,palettegen"
-        val file = File(this.paletteFilePath)
-        if (!file.exists()) file.createNewFile()
+        val paletteFile = File(this.paletteFilePath)
+        if (!paletteFile.exists()) paletteFile.createNewFile()
 
         val command = arrayOf("-y", "-v", "warning", "-i", this.videoUrl, "-vf", filters, this.paletteFilePath)
 
@@ -152,11 +154,8 @@ class RecordPreviewFragment : Fragment() {
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.VISIBLE
-            }
-
-            override fun onProgress(message: String?) {
-                super.onProgress(message)
+                loadingViewGroup.visibility = View.VISIBLE
+                generateButton.hide()
             }
 
             override fun onSuccess(message: String?) {
@@ -164,7 +163,9 @@ class RecordPreviewFragment : Fragment() {
             }
 
             override fun onFailure(message: String?) {
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                loadingViewGroup.visibility = View.GONE
+                generateButton.show()
+
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
@@ -176,14 +177,15 @@ class RecordPreviewFragment : Fragment() {
         val context = this.context ?: return
         var isConversionSuccessful = false
 
-        val outputFile = context.getVideoFilePath(FileType.GIF)
+        val outputFilePath = context.getVideoFilePath(FileType.GIF)
 
         val filters = "fps=15,scale=320:-1:flags=lanczos"
-        val command = arrayOf("-v", "warning", "-stats", "-i", this.videoUrl, "-i", this.paletteFilePath, "-lavfi", "$filters [x]; [x][1:v] paletteuse", "-y", outputFile)
+        val command = arrayOf("-v", "warning", "-stats", "-i", this.videoUrl, "-i", this.paletteFilePath, "-lavfi", "$filters [x]; [x][1:v] paletteuse", "-y", outputFilePath)
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.VISIBLE
+                loadingViewGroup.visibility = View.VISIBLE
+                generateButton.hide()
 
                 val file = File(this@RecordPreviewFragment.videoUrl)
                 Log.i("RecordPreviewFragment", "totalSpace: ${file.totalSpace}")
@@ -199,20 +201,45 @@ class RecordPreviewFragment : Fragment() {
 
             override fun onFailure(message: String?) {
                 isConversionSuccessful = false
-                this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
+                loadingViewGroup.visibility = View.GONE
+                generateButton.show()
+
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
             override fun onFinish() {
                 if (isConversionSuccessful) {
-                    this@RecordPreviewFragment.loadingViewGroup.visibility = View.GONE
-                    launchPreviewFragment(outputFile)
+                    loadingViewGroup.visibility = View.GONE
+                    generateButton.show()
+
+                    val outputFile = File(outputFilePath)
+                    if (!outputFile.exists()) outputFile.createNewFile()
+
+                    shareFile(outputFile)
+
+                    // TODO - Enable When Editor is Ready
+//                    launchEditorFragment(outputFile)
                 }
             }
         })
     }
 
-    private fun launchPreviewFragment(outputFile: String) {
+    private fun shareFile(file: File) {
+        val context = this.context ?: return
+        val intentShareFile = Intent(Intent.ACTION_SEND)
+        val fileProvider = FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
+
+        intentShareFile.type = URLConnection.guessContentTypeFromName(file.name)
+
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, fileProvider)
+        intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Mamika Title")
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Mamika Body")
+        intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        startActivity(Intent.createChooser(intentShareFile, "Share File"))
+    }
+
+    private fun launchEditorFragment(outputFile: String) {
 
     }
 }
