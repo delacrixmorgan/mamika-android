@@ -73,9 +73,9 @@ class RecordPreviewFragment : Fragment() {
 
         this.bandwidthMeter = DefaultBandwidthMeter()
         this.dataSourceFactory = DefaultDataSourceFactory(
-            this.context,
-            Util.getUserAgent(this.context, this.activity?.packageName),
-            this.bandwidthMeter as TransferListener
+                this.context,
+                Util.getUserAgent(this.context, this.activity?.packageName),
+                this.bandwidthMeter as TransferListener
         )
 
         this.arguments?.let {
@@ -114,7 +114,7 @@ class RecordPreviewFragment : Fragment() {
 
     private fun initialiseVideoPlayer(videoUrl: String) {
         val mediaSource = ExtractorMediaSource.Factory(this.dataSourceFactory).createMediaSource(Uri.parse(videoUrl))
-        
+
         this.simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this.context, DefaultTrackSelector())
         this.simpleExoPlayer?.prepare(mediaSource)
         this.simpleExoPlayer?.playWhenReady = true
@@ -208,7 +208,7 @@ class RecordPreviewFragment : Fragment() {
             }
 
             override fun onFinish() {
-                if (isConversionSuccessful) {
+                if (isConversionSuccessful && isVisible) {
                     loadingViewGroup.visibility = View.GONE
                     generateButton.show()
 

@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
                         requestVideoPermissions()
                     }
                 }
+                finish()
             }
         }
     }
