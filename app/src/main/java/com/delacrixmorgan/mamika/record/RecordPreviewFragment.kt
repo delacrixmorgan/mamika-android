@@ -194,13 +194,12 @@ class RecordPreviewFragment : Fragment() {
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
                 loadingViewGroup.visibility = View.VISIBLE
-
                 val file = File(this@RecordPreviewFragment.videoUrl)
                 Log.i("RecordPreviewFragment", "totalSpace: ${file.totalSpace}")
             }
 
             override fun onProgress(message: String?) {
-                Log.i("RecordPreviewFragment", message)
+                Log.i("RecordPreviewFragment", "onProgress: $message")
             }
 
             override fun onSuccess(message: String?) {
@@ -222,9 +221,6 @@ class RecordPreviewFragment : Fragment() {
                     if (!outputFile.exists()) outputFile.createNewFile()
 
                     shareFile(outputFile)
-
-                    // TODO - Enable When Editor is Ready
-//                    launchEditorFragment(outputFile)
                 }
             }
         })
@@ -242,9 +238,5 @@ class RecordPreviewFragment : Fragment() {
         intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         startActivity(Intent.createChooser(intentShareFile, "Share File"))
-    }
-
-    private fun launchEditorFragment(outputFile: String) {
-
     }
 }
