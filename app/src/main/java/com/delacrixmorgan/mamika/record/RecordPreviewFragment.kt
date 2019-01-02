@@ -237,7 +237,7 @@ class RecordPreviewFragment : Fragment() {
         intentShareFile.type = URLConnection.guessContentTypeFromName(file.name)
 
         intentShareFile.putExtra(Intent.EXTRA_STREAM, fileProvider)
-        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sent from Mamika")
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, "#ShotOnMamika️️")
         intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         startActivity(Intent.createChooser(intentShareFile, "Share File"))
