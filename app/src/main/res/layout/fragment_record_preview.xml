@@ -11,22 +11,6 @@
         android:layout_height="match_parent"
         app:surface_type="texture_view" />
 
-    <FrameLayout
-        android:id="@+id/loadingViewGroup"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorOverlay"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,18 +26,28 @@
             android:padding="8dp"
             android:src="@drawable/ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/generateButton"
+            app:layout_constraintEnd_toStartOf="@id/sendButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/generateButton"
+            android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_primary_round"
             android:src="@drawable/ic_send"
+            android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@id/settingsButton"
             app:layout_constraintStart_toEndOf="@id/backButton" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/sendButton"
+            app:layout_constraintEnd_toEndOf="@id/sendButton"
+            app:layout_constraintStart_toStartOf="@id/sendButton"
+            app:layout_constraintTop_toTopOf="@id/sendButton" />
 
         <ImageButton
             android:id="@+id/settingsButton"
@@ -64,7 +58,7 @@
             android:src="@drawable/ic_settings"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/generateButton"
+            app:layout_constraintStart_toEndOf="@id/sendButton"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

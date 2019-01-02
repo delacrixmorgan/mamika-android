@@ -1,12 +1,14 @@
 package com.delacrixmorgan.mamika.record
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
@@ -56,6 +58,7 @@ class RecordPreviewFragment : Fragment() {
     }
 
     private lateinit var ffmpeg: FFmpeg
+    private lateinit var outputFile: File
     private lateinit var bandwidthMeter: DefaultBandwidthMeter
     private lateinit var dataSourceFactory: DefaultDataSourceFactory
 
@@ -90,6 +93,7 @@ class RecordPreviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.progressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(view.context, R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
 
         generatePalette()
         setupListeners()
@@ -143,8 +147,8 @@ class RecordPreviewFragment : Fragment() {
             this.activity?.supportFragmentManager?.popBackStack()
         }
 
-        this.generateButton.setOnClickListener {
-            generatePalette()
+        this.sendButton.setOnClickListener {
+            shareFile(this.outputFile)
         }
 
         this.settingsButton?.setOnClickListener {
@@ -166,7 +170,7 @@ class RecordPreviewFragment : Fragment() {
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
-                loadingViewGroup.visibility = View.VISIBLE
+                progressBar.visibility = View.VISIBLE
             }
 
             override fun onSuccess(message: String?) {
@@ -174,7 +178,7 @@ class RecordPreviewFragment : Fragment() {
             }
 
             override fun onFailure(message: String?) {
-                loadingViewGroup.visibility = View.GONE
+                progressBar.visibility = View.INVISIBLE
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
@@ -193,7 +197,7 @@ class RecordPreviewFragment : Fragment() {
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
-                loadingViewGroup.visibility = View.VISIBLE
+                progressBar.visibility = View.VISIBLE
                 val file = File(this@RecordPreviewFragment.videoUrl)
                 Log.i("RecordPreviewFragment", "totalSpace: ${file.totalSpace}")
             }
@@ -208,18 +212,18 @@ class RecordPreviewFragment : Fragment() {
 
             override fun onFailure(message: String?) {
                 isConversionSuccessful = false
-                loadingViewGroup.visibility = View.GONE
+                sendButton.visibility = View.VISIBLE
+                progressBar.visibility = View.INVISIBLE
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
             override fun onFinish() {
                 if (isConversionSuccessful && isVisible) {
-                    loadingViewGroup.visibility = View.GONE
+                    sendButton.visibility = View.VISIBLE
+                    progressBar.visibility = View.INVISIBLE
 
-                    val outputFile = File(outputFilePath)
+                    outputFile = File(outputFilePath)
                     if (!outputFile.exists()) outputFile.createNewFile()
-
-                    shareFile(outputFile)
                 }
             }
         })
