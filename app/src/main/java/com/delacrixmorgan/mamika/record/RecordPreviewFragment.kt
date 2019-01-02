@@ -215,7 +215,6 @@ class RecordPreviewFragment : Fragment() {
             override fun onFinish() {
                 if (isConversionSuccessful && isVisible) {
                     loadingViewGroup.visibility = View.GONE
-                    generateButton.show()
 
                     val outputFile = File(outputFilePath)
                     if (!outputFile.exists()) outputFile.createNewFile()
