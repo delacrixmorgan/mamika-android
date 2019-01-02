@@ -164,11 +164,6 @@ class RecordPreviewFragment : Fragment() {
 
         val command = arrayOf("-y", "-v", "warning", "-i", this.videoUrl, "-vf", filters, this.paletteFilePath)
 
-//        val command = arrayOf("-y", "-i", this.videoUrl, "-vf", filters, palette)
-//        val command = arrayOf("-i", this.videoUrl, "-vf", "palettegen=max_colors=24", palette)
-        //ffmpeg -y -ss 30 -t 3 -i input.flv \
-        //-vf fps=10,scale=320:-1:flags=lanczos,palettegen palette.png
-
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
             override fun onStart() {
                 loadingViewGroup.visibility = View.VISIBLE

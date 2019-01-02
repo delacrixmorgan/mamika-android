@@ -55,15 +55,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageButton
             android:id="@+id/recordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@color/colorPrimary"
-            app:fabSize="normal"
+            android:background="@drawable/btn_primary_round"
             app:layout_constraintEnd_toStartOf="@id/switchButton"
-            app:layout_constraintStart_toEndOf="@id/galleryButton"
-            app:tint="@android:color/white" />
+            app:layout_constraintStart_toEndOf="@id/galleryButton" />
 
         <ImageButton
             android:id="@+id/switchButton"
