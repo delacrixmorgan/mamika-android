@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -63,6 +64,7 @@ class RecordPreviewFragment : Fragment() {
     private lateinit var dataSourceFactory: DefaultDataSourceFactory
 
     private var videoUrl: String = ""
+    private var isVideoSaved = false
     private var isGalleryVideo: Boolean = false
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private var trackSelector: DefaultTrackSelector? = null
@@ -224,9 +226,27 @@ class RecordPreviewFragment : Fragment() {
 
                     outputFile = File(outputFilePath)
                     if (!outputFile.exists()) outputFile.createNewFile()
+
+                    saveGifExternally(outputFilePath)
                 }
             }
         })
+    }
+
+    private fun saveGifExternally(path: String) {
+        if (!this.isVideoSaved) {
+            val dir = Environment.getExternalStorageDirectory().path
+            val folder = getString(R.string.app_name)
+            val filename = path.split("/").last()
+            val destinationPath = File("$dir/$folder/$filename")
+
+            if (!destinationPath.exists()) {
+                destinationPath.mkdir()
+            }
+
+            File(path).copyTo(target = destinationPath, overwrite = true, bufferSize = DEFAULT_BUFFER_SIZE)
+            this.isVideoSaved = true
+        }
     }
 
     private fun shareFile(file: File) {
