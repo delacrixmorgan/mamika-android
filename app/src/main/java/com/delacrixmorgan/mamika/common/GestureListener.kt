@@ -1,18 +1,17 @@
 package com.delacrixmorgan.mamika.common
 
-import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
 
 /**
- * GestureDetector
+ * GestureListener
  * mamika-android
  *
  * Created by Delacrix Morgan on 29/11/2018.
  * Copyright (c) 2018 licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
  */
 
-class GestureDetector(private val context: Context, private val listener: SwipeGesture) : GestureDetector.OnGestureListener {
+class GestureListener(private val listener: SwipeGesture) : GestureDetector.OnGestureListener {
     private val SWIPE_THRESHOLD = 100
     private val SWIPE_VELOCITY_THRESHOLD = 100
 
@@ -30,16 +29,12 @@ class GestureDetector(private val context: Context, private val listener: SwipeG
     }
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        val widthPixels = this.context.resources.displayMetrics.widthPixels
-
-        if (e.x < widthPixels / 2) {
-            this.listener.onLeftTap()
+        return if (e.action == MotionEvent.ACTION_UP) {
+            this.listener.onTap()
+            true
         } else {
-            this.listener.onRightTap()
+            false
         }
-
-        this.listener.onTap()
-        return true
     }
 
     override fun onLongPress(e: MotionEvent) {

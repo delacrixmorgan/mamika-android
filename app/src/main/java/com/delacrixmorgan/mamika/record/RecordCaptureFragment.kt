@@ -22,6 +22,7 @@ import com.delacrixmorgan.mamika.MainActivity.Companion.VIDEO_PERMISSIONS
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.calculateFingerSpacing
 import com.delacrixmorgan.mamika.common.FileType
+import com.delacrixmorgan.mamika.common.GestureListener
 import com.delacrixmorgan.mamika.common.PermissionsUtils
 import com.delacrixmorgan.mamika.common.SwipeGesture
 import com.delacrixmorgan.mamika.performHapticContextClick
@@ -114,7 +115,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
         val activity = this.activity ?: return
         val isFlashSupported = activity.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
 
-        gestureDetector = GestureDetector(activity, com.delacrixmorgan.mamika.common.GestureDetector(activity, this))
+        gestureDetector = GestureDetector(activity, GestureListener(this))
 
         this.galleryButton.setOnClickListener {
             launchGalleryVideoPickerIntent()
