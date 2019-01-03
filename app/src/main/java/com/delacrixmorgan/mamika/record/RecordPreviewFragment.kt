@@ -126,6 +126,7 @@ class RecordPreviewFragment : Fragment() {
 
         this.simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this.context, DefaultTrackSelector())
         this.simpleExoPlayer?.prepare(mediaSource)
+        this.simpleExoPlayer?.volume = 0F
         this.simpleExoPlayer?.playWhenReady = true
         this.simpleExoPlayer?.repeatMode = Player.REPEAT_MODE_ALL
 
@@ -188,7 +189,7 @@ class RecordPreviewFragment : Fragment() {
             override fun onFailure(message: String?) {
                 progressBar.visibility = View.INVISIBLE
                 retryButton.visibility = View.VISIBLE
-                
+
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
