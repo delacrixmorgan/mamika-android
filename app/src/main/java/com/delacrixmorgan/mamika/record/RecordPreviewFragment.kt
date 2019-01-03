@@ -153,6 +153,12 @@ class RecordPreviewFragment : Fragment() {
             shareFile(this.outputFile)
         }
 
+        this.retryButton.setOnClickListener {
+            this.retryButton.visibility = View.INVISIBLE
+            this.progressBar.visibility = View.VISIBLE
+            generatePalette()
+        }
+
         this.settingsButton?.setOnClickListener {
 
         }
@@ -164,7 +170,7 @@ class RecordPreviewFragment : Fragment() {
             return
         }
 
-        val filters = "fps=15,scale=300:-1:flags=lanczos,palettegen"
+        val filters = "fps=15,scale=720:-1:flags=lanczos,palettegen"
         val paletteFile = File(this.paletteFilePath)
         if (!paletteFile.exists()) paletteFile.createNewFile()
 
@@ -181,6 +187,8 @@ class RecordPreviewFragment : Fragment() {
 
             override fun onFailure(message: String?) {
                 progressBar.visibility = View.INVISIBLE
+                retryButton.visibility = View.VISIBLE
+                
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
 
@@ -194,7 +202,7 @@ class RecordPreviewFragment : Fragment() {
 
         val outputFilePath = context.getVideoFilePath(FileType.GIF)
 
-        val filters = "fps=15,scale=320:-1:flags=lanczos"
+        val filters = "fps=15,scale=720:-1:flags=lanczos"
         val command = arrayOf("-v", "warning", "-stats", "-i", this.videoUrl, "-i", this.paletteFilePath, "-lavfi", "$filters [x]; [x][1:v] paletteuse", "-y", outputFilePath)
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {
