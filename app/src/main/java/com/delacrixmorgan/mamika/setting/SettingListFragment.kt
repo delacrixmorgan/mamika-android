@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.delacrixmorgan.mamika.BuildConfig
-import com.delacrixmorgan.mamika.R
+import com.delacrixmorgan.mamika.*
 import kotlinx.android.synthetic.main.fragment_setting_list.*
 
 /**
@@ -19,6 +18,10 @@ import kotlinx.android.synthetic.main.fragment_setting_list.*
 
 class SettingListFragment : Fragment() {
     companion object {
+        private const val SOURCE_CODE_URL = "https://github.com/delacrixmorgan/mamika-android"
+        private const val KINGS_CUP_PACKAGE_NAME = "com.delacrixmorgan.kingscup"
+        private const val SQUARK_PACKAGE_NAME = "com.delacrixmorgan.squark"
+
         fun newInstance() = SettingListFragment()
     }
 
@@ -41,28 +44,30 @@ class SettingListFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        this.kingscupViewGroup.setOnClickListener {
+        val context = this.context ?: return
 
+        this.kingscupViewGroup.setOnClickListener {
+            context.launchPlayStore(KINGS_CUP_PACKAGE_NAME)
         }
 
         this.squarkViewGroup.setOnClickListener {
-
+            context.launchPlayStore(SQUARK_PACKAGE_NAME)
         }
 
         this.sourceCodeButton.setOnClickListener {
-
+            context.launchWebsite(SOURCE_CODE_URL)
         }
 
         this.creditButton.setOnClickListener {
-
+            // TODO - Link Credits
         }
 
         this.supportButton.setOnClickListener {
-
+            context.launchPlayStore(context.packageName)
         }
 
         this.shareButton.setOnClickListener {
-
+            context.shareAppIntent("HEY")
         }
 
         this.backButton.setOnClickListener {
