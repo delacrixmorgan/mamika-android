@@ -14,6 +14,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.common.FileType
+import com.delacrixmorgan.mamika.setting.SettingListFragment
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -161,7 +162,17 @@ class RecordPreviewFragment : Fragment() {
         }
 
         this.settingsButton?.setOnClickListener {
+            launchSettingsFragment()
+        }
+    }
 
+    private fun launchSettingsFragment() {
+        val settingsFragment = SettingListFragment.newInstance()
+        this.activity?.apply {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.routingContainer, settingsFragment, settingsFragment.javaClass.simpleName)
+                    .addToBackStack(settingsFragment.javaClass.simpleName)
+                    .commit()
         }
     }
 

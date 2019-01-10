@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Mamika</string>
+    <string name="message_build_version_name">v%s #%d</string>
 
     <string name="message_record_capture_permission_required">Permission Required</string>
     <string name="message_record_capture_session_exception_error">Unable to configure capture session</string>
@@ -14,4 +15,15 @@
     <string name="record_capture_message_trim_fail">FFMPEG Trim Failed</string>
     <string name="record_capture_message_not_supported">FFMPEG Not Supported</string>
     <string name="record_capture_title_gallery_select">Select Video</string>
+
+    <string name="setting_list_title">Hey There</string>
+    <string name="setting_list_paragraph_1">Didn\'t mean to pull you out from your GIF making.</string>
+    <string name="setting_list_paragraph_2">Mamika is designed, coded and put together by a single person. Making every single rating a big boost for me.</string>
+    <string name="setting_list_paragraph_3">The well-being of this game rest entirely on your reviews. Have a great one mate!</string>
+
+    <string name="setting_list_title_more_from_me">More stuff from me</string>
+    <string name="setting_list_title_kingscup">King\'s Cup</string>
+    <string name="setting_list_title_squark">Squark</string>
+    <string name="setting_list_title_source_code">Source Code</string>
+    <string name="setting_list_title_credits">Credits</string>
 </resources>
