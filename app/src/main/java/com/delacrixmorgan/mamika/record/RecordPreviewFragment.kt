@@ -171,7 +171,7 @@ class RecordPreviewFragment : Fragment() {
             return
         }
 
-        val filters = "fps=15,scale=720:-1:flags=lanczos,palettegen"
+        val filters = "fps=15,scale=480:-1:flags=lanczos,palettegen"
         val paletteFile = File(this.paletteFilePath)
         if (!paletteFile.exists()) paletteFile.createNewFile()
 
@@ -203,7 +203,7 @@ class RecordPreviewFragment : Fragment() {
 
         val outputFilePath = context.getVideoFilePath(FileType.GIF)
 
-        val filters = "fps=15,scale=720:-1:flags=lanczos"
+        val filters = "fps=15,scale=480:-1:flags=lanczos"
         val command = arrayOf("-v", "warning", "-stats", "-i", this.videoUrl, "-i", this.paletteFilePath, "-lavfi", "$filters [x]; [x][1:v] paletteuse", "-y", outputFilePath)
 
         this.ffmpeg.execute(command, object : ExecuteBinaryResponseHandler() {

@@ -94,17 +94,7 @@ fun Activity.hasPermissionsGranted(permissions: Array<String>) =
         ContextCompat.checkSelfPermission((this as FragmentActivity), it) != PackageManager.PERMISSION_GRANTED
     }
 
-/**
- * Configures the necessary [android.graphics.Matrix] transformation to `textureView`.
- * This method should not to be called until the camera preview size is determined in
- * openCamera, or until the size of `textureView` is fixed.
- *
- * @param viewWidth  The width of `textureView`
- * @param viewHeight The height of `textureView`
- */
-
 fun Activity.configureTransform(previewSize: Size, viewWidth: Int, viewHeight: Int) {
-
     val rotation = (this as FragmentActivity).windowManager.defaultDisplay.rotation
     val matrix = Matrix()
 
@@ -160,15 +150,6 @@ fun Context.getFilePathFromVideoURI(contentUri: Uri): String {
 //endregion
 
 //region Video Size
-/**
- * Choose the biggest video size with that is not larger than 1080p, since MediaRecorder
- * cannot handle high-resolution video.
- *
- * @param choices The list of available sizes
- * @return The video size
- */
-
-fun chooseVideoSize(choices: Array<Size>): Size {
-    return choices.first { it.width <= 1080 }
-}
+fun chooseVideoSize(choices: Array<Size>) =
+    choices.first { it.width <= 1080 }
 //endregion
