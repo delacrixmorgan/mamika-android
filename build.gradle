@@ -3,7 +3,9 @@ buildscript {
         kotlin_version = '1.3.11'
         material_version = '1.0.0'
         exoplayer_version = '2.9.2'
+        bravobit_ffmpeg_version = '1.1.5'
 
+        androidx_core_ktx = '1.0.1'
         androidx_appcompat_version = '1.0.2'
         androidx_constraint_layout_version = '1.1.3'
     }

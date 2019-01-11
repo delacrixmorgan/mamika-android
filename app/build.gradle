@@ -27,6 +27,7 @@ android {
 dependencies {
     testImplementation 'junit:junit:4.12'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
@@ -36,9 +37,11 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.google.android.material:material:$material_version"
-    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
     implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
+
+    implementation "androidx.core:core-ktx:$androidx_core_ktx"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraint_layout_version"
 
-    implementation "nl.bravobit:android-ffmpeg:1.1.5"
+    implementation "nl.bravobit:android-ffmpeg:$bravobit_ffmpeg_version"
 }
