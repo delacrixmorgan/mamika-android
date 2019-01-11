@@ -83,17 +83,17 @@ object PermissionsUtils {
                         .forEach {
                             when (fragmentOrActivity) {
                                 is Fragment ->
-                                    if (fragmentOrActivity.shouldShowRequestPermissionRationale(permissions[0])) {
-                                        return PermissionStatus.DENY
+                                    return if (fragmentOrActivity.shouldShowRequestPermissionRationale(permissions[0])) {
+                                        PermissionStatus.DENY
                                     } else {
-                                        return PermissionStatus.NEVER_ASK_AGAIN
+                                        PermissionStatus.NEVER_ASK_AGAIN
                                     }
 
                                 is Activity ->
-                                    if (ActivityCompat.shouldShowRequestPermissionRationale(fragmentOrActivity, permissions[0])) {
-                                        return PermissionStatus.DENY
+                                    return if (ActivityCompat.shouldShowRequestPermissionRationale(fragmentOrActivity, permissions[0])) {
+                                        PermissionStatus.DENY
                                     } else {
-                                        return PermissionStatus.NEVER_ASK_AGAIN
+                                        PermissionStatus.NEVER_ASK_AGAIN
                                     }
                             }
                         }
