@@ -32,6 +32,11 @@ class SettingCreditDetailFragment : Fragment() {
     }
 
     private fun setupLayouts() {
+        // League Spartan
+//        https://github.com/theleagueof/league-spartan
+
+        // Bravo Bit FFMPEG
+//        https://github.com/bravobit/FFmpeg-Android
 
     }
 
