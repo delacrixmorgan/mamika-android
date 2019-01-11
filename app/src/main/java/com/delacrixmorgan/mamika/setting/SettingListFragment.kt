@@ -59,7 +59,7 @@ class SettingListFragment : Fragment() {
         }
 
         this.creditButton.setOnClickListener {
-            // TODO - Link Credits
+            launchCreditFragment()
         }
 
         this.supportButton.setOnClickListener {
@@ -72,6 +72,16 @@ class SettingListFragment : Fragment() {
 
         this.backButton.setOnClickListener {
             this.activity?.supportFragmentManager?.popBackStack()
+        }
+    }
+
+    private fun launchCreditFragment() {
+        val creditFragment = SettingCreditDetailFragment.newInstance()
+        this.activity?.apply {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.routingContainer, creditFragment, creditFragment.javaClass.simpleName)
+                .addToBackStack(creditFragment.javaClass.simpleName)
+                .commit()
         }
     }
 }
