@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import java.io.File
 
 /**
  * MamikaExtensions
@@ -29,6 +31,19 @@ fun MotionEvent.calculateFingerSpacing(): Float {
     val y = getY(0) - getY(1)
 
     return Math.sqrt((x * x + y * y).toDouble()).toFloat()
+}
+
+fun Context.saveFileExternally(videoUrl: String) {
+    val dir = Environment.getExternalStorageDirectory().path
+    val folder = getString(R.string.app_name)
+    val filename = videoUrl.split("/").last()
+    val destinationPath = File("$dir/$folder/$filename")
+
+    if (!destinationPath.exists()) {
+        destinationPath.mkdir()
+    }
+
+    File(videoUrl).copyTo(target = destinationPath, overwrite = true, bufferSize = DEFAULT_BUFFER_SIZE)
 }
 
 fun Context.launchPlayStore(packageName: String) {

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
 import com.delacrixmorgan.mamika.common.FileType
+import com.delacrixmorgan.mamika.saveFileExternally
 import com.delacrixmorgan.mamika.setting.SettingListFragment
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
@@ -245,28 +245,15 @@ class RecordPreviewFragment : Fragment() {
                     progressBar.visibility = View.INVISIBLE
 
                     outputFile = File(outputFilePath)
-                    if (!outputFile.exists()) outputFile.createNewFile()
 
-                    saveGifExternally(outputFilePath)
+                    if (!outputFile.exists()) outputFile.createNewFile()
+                    if (!isVideoSaved) {
+                        context.saveFileExternally(outputFilePath)
+                        isVideoSaved = true
+                    }
                 }
             }
         })
-    }
-
-    private fun saveGifExternally(path: String) {
-        if (!this.isVideoSaved) {
-            val dir = Environment.getExternalStorageDirectory().path
-            val folder = getString(R.string.app_name)
-            val filename = path.split("/").last()
-            val destinationPath = File("$dir/$folder/$filename")
-
-            if (!destinationPath.exists()) {
-                destinationPath.mkdir()
-            }
-
-            File(path).copyTo(target = destinationPath, overwrite = true, bufferSize = DEFAULT_BUFFER_SIZE)
-            this.isVideoSaved = true
-        }
     }
 
     private fun shareFile(file: File) {

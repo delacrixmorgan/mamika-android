@@ -26,6 +26,7 @@ import com.delacrixmorgan.mamika.common.GestureListener
 import com.delacrixmorgan.mamika.common.PermissionsUtils
 import com.delacrixmorgan.mamika.common.SwipeGesture
 import com.delacrixmorgan.mamika.performHapticContextClick
+import com.delacrixmorgan.mamika.saveFileExternally
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_record_capture.*
 import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler
@@ -154,7 +155,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
                 val mediaPlayer = MediaPlayer.create(this.context, videoUri)
 
                 if (mediaPlayer.duration <= MAX_DURATION_IN_MILLISECONDS) {
-                    launchPreviewFragment(videoUrl, true)
+                    preparePreviewFragment(videoUrl, true)
                 } else {
                     trimVideoDuration(videoUrl)
                 }
@@ -196,15 +197,19 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
     //region LaunchFragments
     private fun launchGalleryVideoPickerIntent() {
         val galleryVideoIntent = Intent()
+        val intentChooser = Intent.createChooser(galleryVideoIntent, getString(R.string.record_capture_title_gallery_select))
+
         galleryVideoIntent.type = "video/*"
         galleryVideoIntent.action = Intent.ACTION_PICK
 
-        startActivityForResult(
-                Intent.createChooser(
-                        galleryVideoIntent,
-                        getString(R.string.record_capture_title_gallery_select)
-                ), REQUEST_GALLERY_PICK
-        )
+        startActivityForResult(intentChooser, REQUEST_GALLERY_PICK)
+    }
+
+    private fun preparePreviewFragment(videoUrl: String, isGalleryVideo: Boolean = false) {
+        if (!isGalleryVideo) {
+            this.context?.saveFileExternally(videoUrl)
+        }
+        launchPreviewFragment(videoUrl, isGalleryVideo)
     }
 
     private fun launchPreviewFragment(videoUrl: String, isGalleryVideo: Boolean = false) {
@@ -251,7 +256,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
                 override fun onFinish() {
                     if (isTrimSuccessful) {
                         this@RecordCaptureFragment.loadingViewGroup.visibility = View.GONE
-                        launchPreviewFragment(outputFile, true)
+                        preparePreviewFragment(outputFile, true)
                     }
                 }
             })
@@ -670,7 +675,7 @@ class RecordCaptureFragment : Fragment(), SwipeGesture {
                 }
 
                 if (videoAbsolutePath != "") {
-                    this.launchPreviewFragment(videoAbsolutePath.toString())
+                    preparePreviewFragment(videoAbsolutePath.toString())
                 }
 
                 videoAbsolutePath = null
