@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.delacrixmorgan.mamika.R
+import com.delacrixmorgan.mamika.launchWebsite
+import kotlinx.android.synthetic.main.fragment_setting_credit_detail.*
 
 /**
  * SettingCreditDetailFragment
@@ -26,21 +28,22 @@ class SettingCreditDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupLayouts()
         setupListeners()
     }
 
-    private fun setupLayouts() {
-        // League Spartan
-//        https://github.com/theleagueof/league-spartan
-
-        // Bravo Bit FFMPEG
-//        https://github.com/bravobit/FFmpeg-Android
-
-    }
-
     private fun setupListeners() {
+        val context = this.context ?: return
 
+        this.leagueImageView.setOnClickListener {
+            context.launchWebsite("https://github.com/bravobit/FFmpeg-Android")
+        }
+
+        this.bravobitImageView.setOnClickListener {
+            context.launchWebsite("https://github.com/bravobit/FFmpeg-Android")
+        }
+
+        this.backButton.setOnClickListener {
+            this.activity?.supportFragmentManager?.popBackStack()
+        }
     }
 }
