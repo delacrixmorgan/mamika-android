@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="6dp"
-                android:text="Hugs and Kisses"
+                android:text="@string/title_hearts_and_kisses"
                 android:textColor="@color/colorAccent"
                 android:textSize="22sp" />
 
