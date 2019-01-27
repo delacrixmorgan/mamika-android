@@ -170,7 +170,7 @@ class RecordPreviewFragment : Fragment() {
         val settingsFragment = SettingListFragment.newInstance()
         this.activity?.apply {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.routingContainer, settingsFragment, settingsFragment.javaClass.simpleName)
+                    .add(R.id.routingContainer, settingsFragment, settingsFragment.javaClass.simpleName)
                     .addToBackStack(settingsFragment.javaClass.simpleName)
                     .commit()
         }
@@ -234,7 +234,7 @@ class RecordPreviewFragment : Fragment() {
 
             override fun onFailure(message: String?) {
                 isConversionSuccessful = false
-                sendButton.visibility = View.VISIBLE
+                retryButton.visibility = View.VISIBLE
                 progressBar.visibility = View.INVISIBLE
                 Snackbar.make(this@RecordPreviewFragment.parentViewGroup, getString(R.string.record_capture_message_trim_fail), Snackbar.LENGTH_SHORT).show()
             }
@@ -251,6 +251,9 @@ class RecordPreviewFragment : Fragment() {
                         context.saveFileExternally(outputFilePath)
                         isVideoSaved = true
                     }
+                } else {
+                    retryButton.visibility = View.VISIBLE
+                    progressBar.visibility = View.INVISIBLE
                 }
             }
         })

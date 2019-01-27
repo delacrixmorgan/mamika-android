@@ -38,7 +38,8 @@
             android:src="@drawable/ic_send"
             android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@id/settingsButton"
-            app:layout_constraintStart_toEndOf="@id/backButton" />
+            app:layout_constraintStart_toEndOf="@id/backButton"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/retryButton"
