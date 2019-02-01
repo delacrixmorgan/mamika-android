@@ -1,4 +1,6 @@
-# Mamika - GIF Maker
+# Mamika
+
+![Overview Header](screenshots/0_header.png?raw=true "Overview Header")
 
 ## Overview
 Capture the perfect moments into super fun GIFs.
@@ -24,6 +26,8 @@ Allows you to add all sorts of video effects, filter and text STRAIGHT onto your
 Designed to bring Google Material Design to every aspects of the app. BEST camera is the the one you have with you, don't leave your house without Mamika GIF Maker!
 
 More to come. In the meantime, start shooting!
+
+[Google Play Store - Mamika GIF Maker](https://play.google.com/store/apps/details?id=com.delacrixmorgan.mamika)
 
 ## Screenshots
 
